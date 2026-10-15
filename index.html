@@ -32,6 +32,7 @@ button,.btn{font:inherit;font-weight:700;cursor:pointer;border:1px solid var(--l
   <div id="content"></div>
 </main>
 <script>
+const $ = s => document.querySelector(s);
 const defaultTabs = [
  {id:1,name:'Tab 1',type:'home',urls:{sheets:'',docs:'',drive:''}},
  {id:2,name:'Tab 2',type:'custom',url:''},
@@ -43,18 +44,19 @@ const defaultTabs = [
 ];
 // 1) Paste your Supabase Project URL and publishable key (or legacy anon key) below.
 // Never use a service_role/secret key in this public HTML file.
-const SUPABASE_URL = 'Phttps://gjyeknwtoofpuvoaftfj.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_HBf14rn-fWP8AZ_OaLFfag_V6qNKjk5';
+const SUPABASE_URL = 'PASTE_YOUR_SUPABASE_PROJECT_URL_HERE';
+const SUPABASE_ANON_KEY = 'PASTE_YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY_HERE';
 
-// The workspace ID in the URL is the share-link token. Anyone with the link can view/edit this workspace.
+// Fixed workspace ID: the site always loads this same workspace, so the URL stays clean
+// (https://mejotop.vercel.app) with no #workspace=... part.
+// Keep this long and random, because anyone who opens the site edits this workspace.
+const WORKSPACE_ID = '1ceeced9-496e-493d-bb59-b5c9059c0413';
 function getWorkspaceId(){
-  const params = new URLSearchParams((location.hash || '').replace(/^#/,''));
-  let id = params.get('workspace');
-  if(!id){
-    id = (crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return (c==='x'?r:(r&3|8)).toString(16)}));
-    location.hash = 'workspace=' + id;
+  // Remove any leftover #workspace=... from the address bar without reloading.
+  if(location.hash){
+    history.replaceState(null,'',location.pathname+location.search);
   }
-  return id;
+  return WORKSPACE_ID;
 }
 const workspaceId = getWorkspaceId();
 let supabaseClient = null;
@@ -77,7 +79,7 @@ async function saveToCloud(){
   if(!supabaseClient || !cloudReady) return;
   const {error}=await supabaseClient.from('shared_workspaces').upsert({id:workspaceId,data:state,updated_at:new Date().toISOString()});
   if(error){console.error('Supabase save failed:',error);setSyncStatus('Cloud save failed — check setup');return;}
-  setSyncStatus('Saved to cloud · Share this URL to collaborate');
+  setSyncStatus('Saved to cloud');
 }
 async function initCloud(){
   if(!window.supabase || SUPABASE_URL.includes('PASTE_') || SUPABASE_ANON_KEY.includes('PASTE_')){
@@ -94,12 +96,12 @@ async function initCloud(){
       state=data.data;
       localStorage.setItem('tabbed_workspace_state',JSON.stringify(state));
     }else{
-      // First visit: seed the new shared workspace with the current browser state.
+      // First visit: seed the shared workspace with the current browser state.
       const {error:insertError}=await supabaseClient.from('shared_workspaces').upsert({id:workspaceId,data:state,updated_at:new Date().toISOString()});
       if(insertError) throw insertError;
     }
     cloudReady=true;
-    setSyncStatus('Saved to cloud · Share this URL to collaborate');
+    setSyncStatus('Saved to cloud');
     render();
   }catch(error){
     console.error('Supabase initialization failed:',error);
