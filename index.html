@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Workspace Hub</title>
+<style>
+:root{--bg:#f5f7fb;--panel:#fff;--ink:#172033;--muted:#748096;--line:#e5eaf2;--blue:#4169e1;--blue-soft:#edf2ff;--green:#16856b;--shadow:0 8px 28px rgba(25,42,75,.07)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.app{min-height:100vh;display:flex;flex-direction:column}.topbar{height:70px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 26px;gap:16px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:750;font-size:17px;letter-spacing:-.3px}.brand-mark{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,#4169e1,#7d68ec);color:#fff;display:grid;place-items:center;font-weight:800}
+.top-right{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px}.status-dot{width:8px;height:8px;border-radius:50%;background:#f0b34d;display:inline-block}.layout{display:grid;grid-template-columns:225px minmax(0,1fr);flex:1;min-height:calc(100vh - 70px)}
+.sidebar{padding:22px 14px;border-right:1px solid var(--line);background:#fbfcfe}.side-label{text-transform:uppercase;font-size:10px;font-weight:800;letter-spacing:1.3px;color:#9aa4b6;padding:0 12px;margin:8px 0 10px}
+.nav{width:100%;border:0;background:transparent;color:#637087;padding:12px;border-radius:10px;display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer;margin:3px 0;font:inherit;font-weight:600}.nav .ico{width:22px;text-align:center;font-size:17px}.nav:hover{background:#f0f3fa}.nav.active{background:var(--blue-soft);color:var(--blue)}
+.sidebar-note{margin:28px 7px 0;padding:14px;background:#f0f4ff;border-radius:12px;color:#5e6c89;font-size:12px}.sidebar-note strong{display:block;color:#314d9d;margin-bottom:5px}
+main{padding:26px;min-width:0}.heading-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:20px}.eyebrow{font-size:11px;color:var(--blue);font-weight:800;letter-spacing:1.2px;text-transform:uppercase}.heading-row h1{font-size:25px;letter-spacing:-.7px;margin:5px 0 6px}.sub{color:var(--muted);margin:0}.actions{display:flex;gap:8px;flex-wrap:wrap}
+button,.button{font:inherit;cursor:pointer;border:1px solid var(--line);background:#fff;color:#344056;padding:9px 13px;border-radius:9px;font-weight:650;text-decoration:none;display:inline-flex;align-items:center;gap:7px}.primary{background:var(--blue);border-color:var(--blue);color:white}.button:hover,button:hover{filter:brightness(.98)}
+.tabs{display:flex;gap:5px;overflow-x:auto;padding:5px;background:#eaf0f8;border-radius:12px;margin-bottom:17px;width:max-content;max-width:100%}.tab{border:0;background:transparent;white-space:nowrap;padding:10px 14px;border-radius:8px;color:#66738b;font-weight:700}.tab.active{background:white;color:var(--blue);box-shadow:0 2px 7px #1c315015}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow);overflow:hidden}.panel-head{display:flex;justify-content:space-between;align-items:center;padding:15px 18px;border-bottom:1px solid var(--line);gap:12px}.panel-title{font-weight:750}.panel-desc{font-size:12px;color:var(--muted);margin-top:3px}.embed-wrap{height:min(66vh,720px);min-height:420px;background:#f8faff;position:relative}.embed-wrap iframe{width:100%;height:100%;border:0;background:white}.embed-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:25px;background:linear-gradient(135deg,#f6f8ff,#f2f7fc)}.fallback-card{max-width:430px}.fallback-icon{font-size:35px;margin-bottom:8px}.fallback-card h3{margin:8px 0}.fallback-card p{color:var(--muted);line-height:1.65}.fallback-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:17px}
+.workspace-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.editor-card{padding:17px}.editor-card h3{margin:0 0 5px;font-size:15px}.editor-card p{margin:0 0 13px;color:var(--muted);font-size:12px}.field-label{font-size:12px;font-weight:750;color:#56637a;display:block;margin:12px 0 7px}input,textarea,select{width:100%;font:inherit;border:1px solid #dfe5ef;border-radius:9px;background:#fff;padding:11px 12px;color:var(--ink);outline:none}input:focus,textarea:focus{border-color:#8ba4ff;box-shadow:0 0 0 3px #4169e115}textarea{min-height:280px;resize:vertical;line-height:1.6}.save-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}.small-muted{font-size:11px;color:var(--muted)}.notice{padding:12px 14px;background:#fff8e8;color:#805f1c;border:1px solid #f5e5b9;border-radius:10px;font-size:12px;line-height:1.6;margin-bottom:16px}
+.drive-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:18px}.drive-card{padding:17px;border:1px solid var(--line);border-radius:12px;background:#fff}.drive-card .big{font-size:24px}.drive-card h3{font-size:14px;margin:10px 0 5px}.drive-card p{color:var(--muted);font-size:12px;min-height:34px}.drive-card a{font-size:12px;color:var(--blue);font-weight:750;text-decoration:none}
+.settings{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}.settings .panel{padding:20px}.settings h3{margin-top:0}.help{font-size:12px;color:var(--muted);line-height:1.6}.connection{display:inline-flex;gap:7px;align-items:center;padding:6px 9px;border-radius:20px;background:#fff7e6;color:#916516;font-size:11px;font-weight:750}
+footer{padding:14px 26px;color:#9aa4b6;font-size:11px;text-align:right}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.sidebar{display:flex;gap:6px;overflow-x:auto;padding:10px;border-right:0;border-bottom:1px solid var(--line)}.side-label,.sidebar-note{display:none}.nav{white-space:nowrap;width:auto;margin:0}.nav .ico{width:auto}main{padding:17px}.topbar{padding:0 16px}.workspace-grid,.settings{grid-template-columns:1fr}.drive-grid{grid-template-columns:1fr}.heading-row h1{font-size:22px}.embed-wrap{min-height:360px;height:58vh}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><div class="brand-mark">W</div><span>Workspace Hub</span></div>
+    <div class="top-right"><span class="status-dot" id="statusDot"></span><span id="syncStatus">Local mode · no login required</span></div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="side-label">Workspace</div>
+      <button class="nav active" data-page="overview"><span class="ico">▦</span>Overview</button>
+      <button class="nav" data-page="docs"><span class="ico">▤</span>Google Docs</button>
+      <button class="nav" data-page="sheets"><span class="ico">▦</span>Google Sheets</button>
+      <button class="nav" data-page="drive"><span class="ico">◫</span>Google Drive</button>
+      <button class="nav" data-page="io"><span class="ico">⇄</span>Input / Output</button>
+      <button class="nav" data-page="settings"><span class="ico">⚙</span>Settings</button>
+      <div class="sidebar-note"><strong>Your focused workspace</strong>Keep documents, spreadsheets, files, and working notes in one simple place.</div>
+    </aside>
+    <main id="main"></main>
+  </div>
+  <footer>Workspace Hub · No workspace account required</footer>
+</div>
+<script>
+const $ = s => document.querySelector(s);
+const escapeHtml = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const defaults = {
+  docsUrl:'https://docs.google.com/document/u/0/',
+  sheetsUrl:'https://docs.google.com/spreadsheets/u/0/',
+  driveUrl:'https://drive.google.com/drive/my-drive',
+  supabaseUrl:'',
+  supabaseKey:'',
+  inputTitle:'Input',
+  outputTitle:'Output'
+};
+let config = {...defaults, ...JSON.parse(localStorage.getItem('wh_config')||'{}')};
+let currentPage='overview', io={input:'',output:''}, supabase=null, saveTimer=null;
+try { io = {...io,...JSON.parse(localStorage.getItem('wh_io')||'{}')}; } catch(e){}
+function setStatus(text,ok=false){$('#syncStatus').textContent=text;$('#statusDot').style.background=ok?'#25a879':'#f0b34d'}
+function saveConfig(){localStorage.setItem('wh_config',JSON.stringify(config));connectSupabase();render(currentPage)}
+function render(page){
+ currentPage=page;
+ document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+ const titles={overview:['YOUR WORKSPACE','Everything in one place','Open your Google tools and keep working notes together.'],docs:['DOCUMENTS','Google Docs','Open or embed your documents. Google may require you to sign in to Google separately.'],sheets:['SPREADSHEETS','Google Sheets','Review spreadsheets or open them directly in Google Sheets.'],drive:['FILES','Google Drive','Quick access to Drive and your saved files.'],io:['WORKING NOTES','Input / Output','Capture source material, decisions, drafts, and final deliverables.'],settings:['PREFERENCES','Workspace settings','Configure Google destinations and optional shared storage.']};
+ const [eyebrow,title,sub]=titles[page];
+ let body='';
+ if(page==='overview') body=`
+ <div class="workspace-grid">
+  <section class="panel editor-card"><div class="big">▤</div><h3>Google Docs</h3><p>Drafts, briefs, meeting notes, and documents.</p><a class="button" href="${escapeHtml(config.docsUrl)}" target="_blank" rel="noopener">Open Docs ↗</a></section>
+  <section class="panel editor-card"><div class="big">▦</div><h3>Google Sheets</h3><p>Track numbers, plans, and working spreadsheets.</p><a class="button" href="${escapeHtml(config.sheetsUrl)}" target="_blank" rel="noopener">Open Sheets ↗</a></section>
+  <section class="panel editor-card"><div class="big">◫</div><h3>Google Drive</h3><p>Browse your files and folders.</p><a class="button" href="${escapeHtml(config.driveUrl)}" target="_blank" rel="noopener">Open Drive ↗</a></section>
+  <section class="panel editor-card"><div class="big">⇄</div><h3>Input / Output</h3><p>Save research, ideas, drafts, and final results in this workspace.</p><button class="primary" onclick="render('io')">Open notes →</button></section>
+ </div>
+ <div style="margin-top:16px" class="notice"><b>Important:</b> This workspace does not require its own login. Google Docs, Sheets, and Drive may still ask you to sign in to your Google account. Google often blocks embedding its apps inside another website, so use the “Open” links when an embedded view is unavailable.</div>`;
+ if(page==='docs'||page==='sheets'){
+  const isDocs=page==='docs', url=isDocs?config.docsUrl:config.sheetsUrl, name=isDocs?'Google Docs':'Google Sheets';
+  body=`<section class="panel"><div class="panel-head"><div><div class="panel-title">${name}</div><div class="panel-desc">Embedded view is best-effort; Google may block it for security.</div></div><a class="button primary" href="${escapeHtml(url)}" target="_blank" rel="noopener">Open in new tab ↗</a></div><div class="embed-wrap"><iframe src="${escapeHtml(url)}" title="${name}" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="embed-fallback"><div class="fallback-card"><div class="fallback-icon">${isDocs?'📄':'📊'}</div><h3>Open ${name}</h3><p>If Google does not display inside this panel, that is a Google security restriction—not an app error. Open it in a new tab to use the full experience.</p><div class="fallback-actions"><a class="button primary" href="${escapeHtml(url)}" target="_blank" rel="noopener">Launch ${isDocs?'Docs':'Sheets'} ↗</a></div></div></div></div></section>`;
+ }
+ if(page==='drive') body=`
+ <section class="panel"><div class="panel-head"><div><div class="panel-title">Google Drive</div><div class="panel-desc">Your files stay in your Google account.</div></div><a class="button primary" href="${escapeHtml(config.driveUrl)}" target="_blank" rel="noopener">Open Drive ↗</a></div>
+ <div class="drive-grid">
+ <div class="drive-card"><div class="big">📁</div><h3>My Drive</h3><p>Browse folders and files you own.</p><a href="${escapeHtml(config.driveUrl)}" target="_blank" rel="noopener">Open My Drive ↗</a></div>
+ <div class="drive-card"><div class="big">🤝</div><h3>Shared with me</h3><p>Files other people have shared with you.</p><a href="https://drive.google.com/drive/shared-with-me" target="_blank" rel="noopener">Open shared files ↗</a></div>
+ <div class="drive-card"><div class="big">🕘</div><h3>Recent</h3><p>Quickly return to recently opened files.</p><a href="https://drive.google.com/drive/recent" target="_blank" rel="noopener">Open recent files ↗</a></div>
+ </div></section>
+ <div class="notice" style="margin-top:16px">Drive content is private to your Google account. This app does not bypass Google's permissions or sign-in requirements.</div>`;
+ if(page==='io') body=`
+ <div class="notice">Notes save automatically in this browser. To sync notes across devices, configure Supabase in Settings and create the table described in the setup instructions.</div>
+ <div class="workspace-grid">
+ <section class="panel editor-card"><h3>↘ ${escapeHtml(config.inputTitle||'Input')}</h3><p>Paste research, requests, raw ideas, or source material.</p><textarea id="inputText" placeholder="Start writing or paste your input here...">${escapeHtml(io.input||'')}</textarea><div class="save-row"><span class="small-muted" id="inputSave">Saved locally</span><button onclick="copyText('inputText')">Copy input</button></div></section>
+ <section class="panel editor-card"><h3>↗ ${escapeHtml(config.outputTitle||'Output')}</h3><p>Write your answer, final draft, action plan, or deliverable.</p><textarea id="outputText" placeholder="Your output goes here...">${escapeHtml(io.output||'')}</textarea><div class="save-row"><span class="small-muted" id="outputSave">Saved locally</span><button onclick="copyText('outputText')">Copy output</button></div></section>
+ </div><div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap"><button class="primary" onclick="downloadNotes()">Export notes (.txt)</button><button onclick="clearNotes()">Clear both fields</button></div>`;
+ if(page==='settings') body=`
+ <div class="settings">
+ <section class="panel"><h3>Google destinations</h3><p class="help">Set the URLs that the Docs, Sheets, and Drive tabs open. You can use the default links or paste a specific document/spreadsheet/folder URL.</p>
+ <label class="field-label">Google Docs URL</label><input id="docsUrl" value="${escapeHtml(config.docsUrl)}" placeholder="https://docs.google.com/document/...">
+ <label class="field-label">Google Sheets URL</label><input id="sheetsUrl" value="${escapeHtml(config.sheetsUrl)}" placeholder="https://docs.google.com/spreadsheets/...">
+ <label class="field-label">Google Drive URL</label><input id="driveUrl" value="${escapeHtml(config.driveUrl)}" placeholder="https://drive.google.com/drive/...">
+ <label class="field-label">Input section title</label><input id="inputTitle" value="${escapeHtml(config.inputTitle)}">
+ <label class="field-label">Output section title</label><input id="outputTitle" value="${escapeHtml(config.outputTitle)}">
+ <div style="margin-top:15px"><button class="primary" onclick="saveSettings()">Save preferences</button></div></section>
+ <section class="panel"><h3>Optional cloud sync (Supabase)</h3><p class="help">Supabase can store your notes and synchronize them across browsers. This starter app uses a shared workspace ID, not user login. Anyone who has the app and public app credentials could access the same workspace unless you add access control.</p>
+ <label class="field-label">Supabase project URL</label><input id="supabaseUrl" value="${escapeHtml(config.supabaseUrl)}" placeholder="https://your-project.supabase.co">
+ <label class="field-label">Supabase anon / publishable key</label><input id="supabaseKey" value="${escapeHtml(config.supabaseKey)}" placeholder="sb_publishable_... or anon key">
+ <label class="field-label">Shared workspace ID</label><input id="workspaceId" value="${escapeHtml(config.workspaceId||'main-workspace')}" placeholder="main-workspace">
+ <div style="margin-top:15px"><button class="primary" onclick="saveSettings()">Save and connect</button></div>
+ <p class="help" style="margin-top:16px"><b>Table required:</b> Create a table named <code>workspace_notes</code> with columns <code>id</code> (text, primary key), <code>workspace_id</code> (text), <code>input_text</code> (text), <code>output_text</code> (text), and <code>updated_at</code> (timestamptz). For this no-login starter, only use this for non-sensitive notes and set database policies deliberately. Never put a service_role key in browser code.</p>
+ <div class="connection" id="cloudBadge">● Cloud sync not configured</div>
+ </section></div>`;
+ $('#main').innerHTML=`<div class="heading-row"><div><div class="eyebrow">${eyebrow}</div><h1>${title}</h1><p class="sub">${sub}</p></div><div class="actions">${page!=='settings'?'<button onclick="render(\'settings\')">⚙ Settings</button>':''}</div></div>${page==='overview'?'':`<div class="tabs">${[['docs','▤ Docs'],['sheets','▦ Sheets'],['drive','◫ Drive'],['io','⇄ Input / Output']].map(([p,l])=>`<button class="tab ${page===p?'active':''}" onclick="render('${p}')">${l}</button>`).join('')}</div>`}${body}`;
+ if(page==='io') {['inputText','outputText'].forEach(id=>$('#'+id).addEventListener('input',onNotesChange));}
+ if(page==='settings' && config.supabaseUrl && config.supabaseKey) $('#cloudBadge').textContent='● Supabase credentials saved';
+}
+function saveSettings(){
+ ['docsUrl','sheetsUrl','driveUrl','supabaseUrl','supabaseKey','inputTitle','outputTitle','workspaceId'].forEach(k=>{const el=$('#'+k);if(el)config[k]=el.value.trim()});
+ if(!config.workspaceId)config.workspaceId='main-workspace';
+ localStorage.setItem('wh_config',JSON.stringify(config));connectSupabase();render('settings');
+}
+function onNotesChange(){
+ io.input=$('#inputText').value;io.output=$('#outputText').value;
+ localStorage.setItem('wh_io',JSON.stringify(io));
+ $('#inputSave').textContent='Saved locally';$('#outputSave').textContent='Saved locally';
+ if(supabase){clearTimeout(saveTimer);saveTimer=setTimeout(syncNotes,800)}
+}
+function copyText(id){const el=$('#'+id);el.select();navigator.clipboard?.writeText(el.value).then(()=>{}).catch(()=>{});}
+function downloadNotes(){const content=`INPUT\n=====\n${io.input||''}\n\nOUTPUT\n======\n${io.output||''}\n`;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type:'text/plain'}));a.download='workspace-notes.txt';a.click();URL.revokeObjectURL(a.href)}
+function clearNotes(){if(!confirm('Clear both Input and Output notes?'))return;io={input:'',output:''};localStorage.setItem('wh_io',JSON.stringify(io));if(supabase)syncNotes();render('io')}
+async function connectSupabase(){
+ supabase=null;
+ if(!config.supabaseUrl||!config.supabaseKey){setStatus('Local mode · no login required');return}
+ supabase={url:config.supabaseUrl.replace(/\/$/,''),key:config.supabaseKey};
+ setStatus('Supabase configured · checking connection');
+ try{
+  const r=await fetch(`${supabase.url}/rest/v1/workspace_notes?select=id&limit=1`,{headers:{apikey:supabase.key,Authorization:`Bearer ${supabase.key}`}});
+  if(!r.ok)throw new Error('Connection failed');
+  setStatus('Supabase connected',true);await loadNotes();
+ }catch(e){setStatus('Supabase setup needed');}
+}
+async function loadNotes(){
+ if(!supabase)return;
+ try{
+  const wid=encodeURIComponent(config.workspaceId||'main-workspace');
+  const r=await fetch(`${supabase.url}/rest/v1/workspace_notes?workspace_id=eq.${wid}&select=input_text,output_text&limit=1`,{headers:{apikey:supabase.key,Authorization:`Bearer ${supabase.key}`}});
+  if(!r.ok)return;const rows=await r.json();if(rows.length){io.input=rows[0].input_text||'';io.output=rows[0].output_text||'';localStorage.setItem('wh_io',JSON.stringify(io));if(currentPage==='io')render('io')}
+ }catch(e){}
+}
+async function syncNotes(){
+ if(!supabase)return;
+ const wid=config.workspaceId||'main-workspace';
+ try{
+  const payload={id:wid,workspace_id:wid,input_text:io.input||'',output_text:io.output||'',updated_at:new Date().toISOString()};
+  const r=await fetch(`${supabase.url}/rest/v1/workspace_notes?on_conflict=id`,{method:'POST',headers:{apikey:supabase.key,Authorization:`Bearer ${supabase.key}`,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(payload)});
+  if(!r.ok)throw new Error('sync failed');
+  const a=$('#inputSave'),b=$('#outputSave');if(a)a.textContent='Synced to cloud';if(b)b.textContent='Synced to cloud';setStatus('Cloud sync complete',true);
+ }catch(e){setStatus('Cloud sync failed · check table/policies')}
+}
+document.querySelectorAll('.nav').forEach(b=>b.addEventListener('click',()=>render(b.dataset.page)));
+render('overview');
+if(config.supabaseUrl&&config.supabaseKey)connectSupabase();
+</script>
+</body>
+</html>
